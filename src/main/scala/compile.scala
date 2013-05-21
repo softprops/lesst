@@ -11,6 +11,10 @@ object Compile {
   type Result = Either[CompilationError, CompilationResult]
   def apply(name: String, code: String, options: Options = Options()) =
     DefaultCompile(name, code, options)
+  /** compiles less using a beta version of the compiler, this interface
+   *  may be removed in the future */
+  def beta(name: String, code: String, options: Options = Options()) =
+    BetaCompile(name, code, options)
 }
 
 case class CompilationResult(cssContent: String, imports: List[String])
@@ -101,3 +105,5 @@ abstract class AbstractCompile(src: String)
 }
 
 object DefaultCompile extends AbstractCompile("less-rhino-1.3.3.js")
+
+object BetaCompile extends AbstractCompile("less-rhino-1.4.0.js")
