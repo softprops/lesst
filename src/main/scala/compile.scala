@@ -7,8 +7,10 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import scala.collection.JavaConverters._
 
+import scala.util.{ Failure, Success, Try }
+
 object Compile {
-  type Result = Either[CompilationError, CompilationResult]
+  type Result = Try[CompilationResult]
   def apply(name: String, code: String, options: Options = Options()) =
     DefaultCompile(name, code, options)
   /** compiles less using a beta version of the compiler, this interface
@@ -43,36 +45,35 @@ abstract class AbstractCompile(src: String)
 
   def apply(name: String, code: String, options: Options): Compile.Result =
     withContext { ctx =>
-    try {
       val less = scope.get("compile", scope).asInstanceOf[Callable]
-      less.call(ctx, scope, scope, Array(name, code, options.mini.asInstanceOf[AnyRef]))
-      match {
-        case cr: CompilationResultHost => Right(cr.compilationResult)
-        case ur => Left(UnexpectedResult(ur))
-      }
-    } catch {
-      case e : JavaScriptException =>
-        e.getValue match {
-          case v: Scriptable =>
-            val errorInfo = (Map.empty[String, Any] /: LessError.Properties)(
-              (a,e) =>
-                if (v.has(e, v)) v.get(e, v) match {
-                  case null =>
-                    a
-                  case na: NativeArray =>
-                    a + (e -> na.toArray.map(_.asInstanceOf[Any]).toSeq)
-                  case dbl: java.lang.Double
-                    if(Seq("line","column", "index").contains(e)) =>
-                    a + (e -> dbl.toInt)
-                  case job =>
-                    a + (e -> job.asInstanceOf[Any])
-                } else a
-            )
-            Left(LessError.from(options.colors, errorInfo))
-          case ue =>
-            Left(UnexpectedError(ue)) // null, undefined, Boolean, Number, String, or Function
-        }
-    }
+       Try(less.call(ctx, scope, scope, Array(name, code, options.mini.asInstanceOf[AnyRef])))
+         .flatMap {
+           case cr: CompilationResultHost => Success(cr.compilationResult)
+           case ur => Failure(UnexpectedResult(ur))
+         }
+         .recoverWith {
+           case e : JavaScriptException =>
+             e.getValue match {
+               case v: Scriptable =>
+                 val errorInfo = (Map.empty[String, Any] /: LessError.Properties)(
+                   (a,e) =>
+                     if (v.has(e, v)) v.get(e, v) match {
+                       case null =>
+                         a
+                       case na: NativeArray =>
+                         a + (e -> na.toArray.map(_.asInstanceOf[Any]).toSeq)
+                       case dbl: java.lang.Double
+                       if(Seq("line","column", "index").contains(e)) =>
+                         a + (e -> dbl.toInt)
+                       case job =>
+                         a + (e -> job.asInstanceOf[Any])
+                     } else a
+                 )
+                 Failure(LessError.from(options.colors, errorInfo))
+               case ue =>
+                 Failure(UnexpectedError(ue)) // null, undefined, Boolean, Number, String, or Function
+             }
+         }
   }
 
   override def toString = "%s (%s)" format(super.toString, src)
