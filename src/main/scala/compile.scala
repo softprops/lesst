@@ -7,10 +7,8 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import scala.collection.JavaConverters._
 
-import scala.util.{ Failure, Success, Try }
-
 object Compile {
-  type Result = Try[CompilationResult]
+  type Result = Either[CompilationError, CompilationResult]
   def apply(name: String, code: String, options: Options = Options()) =
     DefaultCompile(name, code, options)
   /** compiles less using a beta version of the compiler, this interface
@@ -22,7 +20,8 @@ object Compile {
 case class CompilationResult(cssContent: String, imports: List[String])
 
 class CompilationResultHost extends ScriptableObject {
-  implicit class NativeArrayWrapper(arr: NativeArray) {
+  implicit def implna(arr: NativeArray) = new NativeArrayWrapper(arr)
+  class NativeArrayWrapper(arr: NativeArray) {
     def toList[T](f: AnyRef => T): List[T] =
       (arr.getIds map { id: AnyRef =>
         f(arr.get(id.asInstanceOf[java.lang.Integer], null))
@@ -46,13 +45,13 @@ abstract class AbstractCompile(src: String)
   def apply(name: String, code: String, options: Options): Compile.Result =
     withContext { ctx =>
       val less = scope.get("compile", scope).asInstanceOf[Callable]
-      Try(less.call(ctx, scope, scope, Array(name, code, options.mini.asInstanceOf[AnyRef])))
-        .flatMap {
-          case cr: CompilationResultHost => Success(cr.compilationResult)
-          case ur => Failure(UnexpectedResult(ur))
+      try {
+        less.call(ctx, scope, scope, Array(name, code, options.mini.asInstanceOf[AnyRef])) match {
+          case cr: CompilationResultHost => Right(cr.compilationResult)
+          case ur => Left(UnexpectedResult(ur))
         }
-        .recoverWith {
-          case e : JavaScriptException =>
+      } catch {
+          case e: JavaScriptException =>
             e.getValue match {
               case v: Scriptable =>
                 val errorInfo = (Map.empty[String, Any] /: LessError.Properties)(
@@ -69,9 +68,9 @@ abstract class AbstractCompile(src: String)
                         a + (e -> job.asInstanceOf[Any])
                     } else a
                 )
-                Failure(LessError.from(options.colors, errorInfo))
+                Left(LessError.from(options.colors, errorInfo))
               case ue =>
-                Failure(UnexpectedError(ue)) // null, undefined, Boolean, Number, String, or Function
+                Left(UnexpectedError(ue)) // null, undefined, Boolean, Number, String, or Function
             }
         }
   }

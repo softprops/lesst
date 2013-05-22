@@ -4,7 +4,8 @@ name := "lesst"
 
 version := "0.1.0-SNAPSHOT"
 
-crossScalaVersions := Seq("2.9.3", "2.10.0", "2.10.1")
+// todo: drop 2.9.2 either for try in next release
+crossScalaVersions := Seq("2.9.2", "2.9.3", "2.10.0", "2.10.1")
 
 description := "a chauffeur for scala patrons in the less css compilation party"
 
