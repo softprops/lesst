@@ -30,6 +30,8 @@ Compile(fileName, lessSourceCode, Options().copy(mini = true))
 
 Got other stuff to do? Why wait? Put a `scala.util.Future` on it.
 
+
+```scala
 import scala.concurrent.Future
 import ExecutionContext.Implicits.global
 import lesst.{ Compile, CompilationResult }
@@ -39,6 +41,6 @@ Future(Compile(file, lessSourceCode)).map {
     println(css)
 }
 println("compiling scala...")
-
+```
 
 Doug Tangren (softprops) 2013
