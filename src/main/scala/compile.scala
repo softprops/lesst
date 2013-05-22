@@ -46,34 +46,34 @@ abstract class AbstractCompile(src: String)
   def apply(name: String, code: String, options: Options): Compile.Result =
     withContext { ctx =>
       val less = scope.get("compile", scope).asInstanceOf[Callable]
-       Try(less.call(ctx, scope, scope, Array(name, code, options.mini.asInstanceOf[AnyRef])))
-         .flatMap {
-           case cr: CompilationResultHost => Success(cr.compilationResult)
-           case ur => Failure(UnexpectedResult(ur))
-         }
-         .recoverWith {
-           case e : JavaScriptException =>
-             e.getValue match {
-               case v: Scriptable =>
-                 val errorInfo = (Map.empty[String, Any] /: LessError.Properties)(
-                   (a,e) =>
-                     if (v.has(e, v)) v.get(e, v) match {
-                       case null =>
-                         a
-                       case na: NativeArray =>
-                         a + (e -> na.toArray.map(_.asInstanceOf[Any]).toSeq)
-                       case dbl: java.lang.Double
-                       if(Seq("line","column", "index").contains(e)) =>
-                         a + (e -> dbl.toInt)
-                       case job =>
-                         a + (e -> job.asInstanceOf[Any])
-                     } else a
-                 )
-                 Failure(LessError.from(options.colors, errorInfo))
-               case ue =>
-                 Failure(UnexpectedError(ue)) // null, undefined, Boolean, Number, String, or Function
-             }
-         }
+      Try(less.call(ctx, scope, scope, Array(name, code, options.mini.asInstanceOf[AnyRef])))
+        .flatMap {
+          case cr: CompilationResultHost => Success(cr.compilationResult)
+          case ur => Failure(UnexpectedResult(ur))
+        }
+        .recoverWith {
+          case e : JavaScriptException =>
+            e.getValue match {
+              case v: Scriptable =>
+                val errorInfo = (Map.empty[String, Any] /: LessError.Properties)(
+                  (a,e) =>
+                    if (v.has(e, v)) v.get(e, v) match {
+                      case null =>
+                        a
+                      case na: NativeArray =>
+                        a + (e -> na.toArray.map(_.asInstanceOf[Any]).toSeq)
+                      case dbl: java.lang.Double
+                      if(Seq("line","column", "index").contains(e)) =>
+                        a + (e -> dbl.toInt)
+                      case job =>
+                        a + (e -> job.asInstanceOf[Any])
+                    } else a
+                )
+                Failure(LessError.from(options.colors, errorInfo))
+              case ue =>
+                Failure(UnexpectedError(ue)) // null, undefined, Boolean, Number, String, or Function
+            }
+        }
   }
 
   override def toString = "%s (%s)" format(super.toString, src)
