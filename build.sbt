@@ -6,7 +6,7 @@ version := "0.1.0-SNAPSHOT"
 
 crossScalaVersions := Seq("2.9.3", "2.10.0", "2.10.1")
 
-description := "..."
+description := "a chauffeur for scala patrons in the less css compilation party"
 
 scalacOptions ++= Seq(Opts.compile.deprecation, "-feature")
 
