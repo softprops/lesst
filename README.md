@@ -18,6 +18,8 @@ To compile less source code
 lesst.Compile(fileName, lessSourceCode)
 ```
 
+A filename is required to resolve relative paths to less imports.
+
 This returns a ``scala.Either[CompilationError, CompilationResult]` which provides access the compiled css
 and a list of file imports included in the result.
 
