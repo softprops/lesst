@@ -18,7 +18,7 @@ To compile less source code
 lesst.Compile(fileName, lessSourceCode)
 ```
 
-This returns a ``scala.util.Try[CompilationResult]` which provides access the compiled css
+This returns a ``scala.Either[CompilationError, CompilationResult]` which provides access the compiled css
 and a list of file imports included in the result.
 
 You can optionally minify the generated css 
@@ -33,12 +33,14 @@ Got other stuff to do? Why wait? Put a `scala.util.Future` on it.
 
 ```scala
 import scala.concurrent.Future
-import ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.Implicits.global
 import lesst.{ Compile, CompilationResult }
 Future(Compile(file, lessSourceCode)).map {
-  CompilationResult(css, imports) =>
-    Thread.sleep(1000)
-    println(css)
+  _.fold(println, { _ match {
+    case CompilationResult(css, imports) =>
+      Thread.sleep(1000)
+      println(css)
+  }})
 }
 println("compiling scala...")
 ```
