@@ -62,7 +62,7 @@ abstract class AbstractCompile(src: String)
                       case na: NativeArray =>
                         a + (e -> na.toArray.map(_.asInstanceOf[Any]).toSeq)
                       case dbl: java.lang.Double
-                      if(Seq("line","column", "index").contains(e)) =>
+                      if (Seq("line","column", "index").contains(e)) =>
                         a + (e -> dbl.toInt)
                       case job =>
                         a + (e -> job.asInstanceOf[Any])
