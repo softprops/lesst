@@ -16,4 +16,4 @@ of the library.
 
 ### Planned/Features
 
-- use `scala.util.Try[CompilationResult]` instead of Either. This release targets sbt 0.12.* which is compiled for scala 2.9.2.
+- expose result of compilation as a `scala.util.Try[CompilationResult]` instead of either Either. This release targets sbt 0.12.* which is compiled for scala 2.9.2.
