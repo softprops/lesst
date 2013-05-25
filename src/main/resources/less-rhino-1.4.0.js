@@ -4154,14 +4154,17 @@ var name;
 var rootPath, curPath, limports;
 
 function loadStyleSheet(sheet, callback, reload, remaining) {
-//    var endOfPath = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\')),
-   var sheetName = curPath + '/' + sheet.href,
-       input = readFile(sheetName),
-       contents = sheet.contents || {};
-   contents[sheetName] = input;
+ //   var endOfPath = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\')),
+    var sheetName = curPath + '/' + sheet.href;
+        contents = sheet.contents || {},
+        input = readFile(sheetName);
+
+    contents[sheetName] = input;
         
     var parser = new less.Parser({
-       // paths: [sheet.href.replace(/[\w\.-]+$/, '')],
+        // the paths option below was added in 1.3.0 dis of less-css
+        // it breaks our usage but not sure why so we are documenting in here for now. look into this
+        //paths: [sheet.href.replace(/[\w\.-]+$/, '')],
         contents: contents
     });
     var prevPath = curPath;
@@ -4187,7 +4190,6 @@ function writeFile(filename, content) {
     out.close();
 }
 
-
 // removed original cmdline argument handling function
 // with this function for convenient scoped access to the
 // less.Parser function
@@ -4204,8 +4206,8 @@ function compile(scriptName, code, min) {
 }
 
 function error(e, filename) {
-    // this function previously constructed a string to print
-    // here, we are adding the filename for context and
+    // this function previously construct a string to print
+    // here, we are adding the filename for context and 
     // rethrowing the error containing structured information
     e.filename = filename;
     throw e;
