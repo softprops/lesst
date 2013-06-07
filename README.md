@@ -30,7 +30,7 @@ import lesst.{ Compile, Options }
 Compile(fileName, lessSourceCode, Options().copy(mini = true))
 ```
 
-Got other stuff to do? Why wait? Put a `scala.util.Future` on it.
+Got other stuff to do? Why wait? Put a `scala.concurrent.Future` on it.
 
 
 ```scala
