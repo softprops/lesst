@@ -29,11 +29,9 @@ case class Compiler(compiler: String, options: Options = Options())
     withContext { ctx =>
       val input = implicitly[InputSource[T]].apply(ins)
       val less = scope.get("compile", scope).asInstanceOf[Callable]
-      try {
-        less.call(ctx, scope, scope, arguments(input)) match {
-          case sheet: ScriptableStyleSheet => Right(sheet.result)
-          case ur => Left(UnexpectedResult(ur))
-        }
+      try less.call(ctx, scope, scope, arguments(input)) match {
+        case sheet: ScriptableStyleSheet => Right(sheet.result)
+        case ur => Left(UnexpectedResult(ur))
       } catch {
           case e: JavaScriptException =>
             e.getValue match {
