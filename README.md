@@ -20,7 +20,7 @@ lesst.Compile(fileName, lessSourceCode)
 
 A filename is required to resolve relative paths to less @imports.
 
-This returns a ``scala.Either[CompilationError, StyleSheet]` which provides access the compiled css
+This returns a `scala.Either[CompilationError, StyleSheet]` which provides access the compiled css
 and a list of file imports included in the StyleSheet or a CompilationError containing information about what happened and where.
 
 You can optionally minify the generated css if you like skinny output. The default is to not minify output.
