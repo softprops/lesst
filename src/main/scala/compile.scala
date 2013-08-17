@@ -1,44 +1,28 @@
 package lesst
 
 import org.mozilla.javascript.{
-  Callable, Context, Function, FunctionObject, JavaScriptException,
-  NativeArray, NativeObject, Scriptable, ScriptableObject, ScriptRuntime }
+  Callable, Context, JavaScriptException,
+  NativeArray, Scriptable, ScriptableObject }
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import scala.collection.JavaConverters._
 
-case class StyleSheet(src: String, imports: List[String])
-
 object Compile {
   type Result = Either[CompilationError, StyleSheet]
-  def apply(filename: String, code: String, options: Options = Options()) =
-    DefaultCompile(filename, code, options)
+  def apply(options: Options = Options()) = DefaultCompiler
 }
 
-class ScriptableStyleSheet extends ScriptableObject {
-  implicit class NativeArrayWrapper(arr: NativeArray) {
-    def toList[T](f: AnyRef => T): List[T] =
-      (arr.getIds map { id: AnyRef =>
-        f(arr.get(id.asInstanceOf[java.lang.Integer], null))
-      }).toList
-  }
-  // yes. it's mutable. it's also javascript.
-  var result: StyleSheet = null
+/** Less CSS compiler interface */
+case class Compiler(compiler: String, options: Options = Options())
+  extends ShellEmulation {
+  
+  def minify(m: Boolean) =
+    copy(options = options.copy(mini = m))
 
-  override def getClassName() = "StyleSheet"
+  def colors(c: Boolean) =
+    copy(options = options.copy(colors = c))
 
-  def jsConstructor(css: String, imports: NativeArray) {
-    result = StyleSheet(css, imports.toList(_.toString))
-  }
-}
-
-abstract class AbstractCompile(src: String)
-  extends ((String, String, Options) => Compile.Result)
-    with ShellEmulation {
-
-  // rhino/less issue: https://github.com/cloudhead/less.js/issues/555
-
-  def apply(name: String, code: String, options: Options): Compile.Result =
+  def apply(name: String, code: String): Compile.Result =
     withContext { ctx =>
       val less = scope.get("compile", scope).asInstanceOf[Callable]
       try {
@@ -72,7 +56,7 @@ abstract class AbstractCompile(src: String)
         }
   }
 
-  override def toString = "%s (%s)" format(super.toString, src)
+  override def toString = "%s (%s)" format(super.toString, compiler)
 
   private val utf8 = Charset.forName("utf-8")
 
@@ -81,9 +65,9 @@ abstract class AbstractCompile(src: String)
     ctx.evaluateReader(
       scope,
       new InputStreamReader(
-        getClass().getResourceAsStream("/%s" format src),
+        getClass().getResourceAsStream("/%s" format compiler),
         utf8),
-      src, 1, null
+      compiler, 1, null
     )
     ScriptableObject.defineClass(scope, classOf[ScriptableStyleSheet]);
     scope
@@ -101,4 +85,4 @@ abstract class AbstractCompile(src: String)
   }
 }
 
-object DefaultCompile extends AbstractCompile("less-rhino-1.4.2.js")
+object DefaultCompiler extends Compiler("less-rhino-1.4.2.js")

@@ -15,7 +15,7 @@ actually like repeating your self over and over in css. In which case, this libr
 To compile less source code, apply a filename and a string containing source code to `lesst.Compile`
 
 ```scala
-lesst.Compile(fileName, lessSourceCode)
+lesst.Compile()(fileName, lessSourceCode)
 ```
 
 A filename is required to resolve relative paths to less @imports.
@@ -27,7 +27,13 @@ You can optionally minify the generated css if you like skinny output. The defau
 
 ```scala
 import lesst.{ Compile, Options }
-Compile(fileName, lessSourceCode, Options(mini = true))
+Compile(Options(mini = true))(fileName, lessSourceCode)
+```
+
+You can also store a reference to Compiler an call method which return a new compile with updated options
+
+```
+lesst.Compile().minify(true)(fileName, lessSource)
 ```
 
 ### future is full of choices
@@ -41,7 +47,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import lesst.{ Compile, StyleSheet }
 
-Future(Compile(file, lessSourceCode)).map {
+Future(Compile()(file, lessSourceCode)).map {
   _.fold(println, { _ match {
     case StyleSheet(css, _) =>
       Thread.sleep(1000)

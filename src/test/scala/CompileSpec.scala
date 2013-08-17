@@ -4,11 +4,11 @@ import org.scalatest.FunSpec
 
 class CompileSpec extends FunSpec with Fixtures {
   describe ("compile") {
-
+    val compile = Compile()
     it ("should compile basic less files") {
       val path = "less/basic.less"
       val code = file("/" + path)
-      Compile(path, code) match {
+      compile(path, code) match {
         case Right(sheet) =>
           assert(sheet.src === file("/css/basic.css"))
           assert(sheet.imports === List())
@@ -19,7 +19,7 @@ class CompileSpec extends FunSpec with Fixtures {
     it ("should fail to compile invalid sources with undefined vars") {
       val path = "less/undef.less"
       val code = file("/" + path)
-      Compile(path, code) match {
+      compile(path, code) match {
         case Right(_) =>
           fail("%s should not have compiled" format path)
         case Left(undefined: UndefinedVar) =>
@@ -33,7 +33,7 @@ class CompileSpec extends FunSpec with Fixtures {
     it ("should fail to compile with old ~ string interpolation") {
       val path = "less/tilde.less"
       val code = file("/" + path)
-      Compile(path, code) match {
+      compile(path, code) match {
         case Right(_) =>
           fail("%s should not have compiled")
         case Left(pr: ParseError) =>
@@ -48,13 +48,12 @@ class CompileSpec extends FunSpec with Fixtures {
     it ("should compile with new @{_} interpolation") {
       val path = "less/at.less"
       val code = file("/" + path)
-      Compile(path, code) match {
+      compile(path, code) match {
         case Right(sheet) =>
           assert(sheet.src === file("/css/at.css"))
         case Left(f) =>
           fail("expected success but was %s" format f)
       }        
     }
-
   }
 }
