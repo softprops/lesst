@@ -17,6 +17,13 @@ case class UnexpectedError(err: Any)
 }
 
 object LessError {
+  val Line = "line"
+  val Col = "column"
+  val Msg = "message"
+  val Name = "name"
+  val Extract = "extract"
+  val Filename = "filename"
+  val Type = "type"
 
   trait Formatter[T <: CompilationError] {
     def apply(e: T): String
@@ -27,38 +34,37 @@ object LessError {
   }
 
   val Properties = Seq(
-    "name", "message", "type", "filename", "line",
-    "column", "callLine", "callExtract", "stack",
-    "extract", "index", "filename")
+    Name, Msg, Type, Filename, Line,
+    Col, "callLine", "callExtract", "stack",
+    Extract, "index", "filename")
 
   val UndefVar = """variable (@.*) is undefined""".r
 
   def from(colors: Boolean, props: Map[String, Any]): CompilationError =
     if (ParseError.is(props)) ParseError(
-      props("line").toString.toInt,
-      props("column").toString.toInt,
-      props("message").toString,
-      props("extract").asInstanceOf[Seq[String]],
+      props(Line).toString.toInt,
+      props(Col).toString.toInt,
+      props(Msg).toString,
+      props(Extract).asInstanceOf[Seq[String]],
       ParseError.Formatter(colors)
     ) else if (SyntaxError.is(props)) SyntaxError(
-      props("line").toString.toInt,
-      props("column").toString.toInt,
-      props("message").toString,
-      props("filename").toString,
-      props("extract").asInstanceOf[Seq[String]],
+      props(Line).toString.toInt,
+      props(Col).toString.toInt,
+      props(Msg).toString,
+      props(Filename).toString,
+      props(Extract).asInstanceOf[Seq[String]],
       SyntaxError.Formatter(colors)
-    ) else if(props.isDefinedAt("message")) {
-      UndefVar.findFirstMatchIn(props("message").toString) match {
-        case Some(mat) =>
+    ) else if(props.isDefinedAt(Msg)) {
+      UndefVar.findFirstMatchIn(props(Msg).toString).map {
+        case matched =>
           UndefinedVar(
-            mat.group(1),
-            props("line").toString.toInt,
-            props("column").toString.toInt,
-            props("extract").asInstanceOf[Seq[String]],
+            matched.group(1),
+            props(Line).toString.toInt,
+            props(Col).toString.toInt,
+            props(Extract).asInstanceOf[Seq[String]],
             UndefinedVar.Formatter(colors)
           )
-        case _ => GenericLessError(props)
-      }
+      }.getOrElse(GenericLessError(props))
     } else GenericLessError(props)
 }
 
@@ -95,7 +101,7 @@ object SyntaxError {
   }
 
   def is(props: Map[String, Any]) =
-    (props.isDefinedAt("type") && props("type").equals("Syntax"))
+    props.get(LessError.Type).filter(_ == "Syntax").isDefined
 }
 
 case class SyntaxError(
@@ -118,8 +124,8 @@ object ParseError {
   }
 
   def is(props: Map[String, Any]) =
-    ((props.isDefinedAt("name") && props("name").equals("ParseError"))
-     || props.isDefinedAt("type") && props("type").equals("Parse"))
+    (props.get(LessError.Name).filter(_ == "ParseError").isDefined
+     || props.get(LessError.Type).filter(_ == "Parse").isDefined)
 }
 
 case class ParseError(
