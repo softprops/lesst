@@ -4,7 +4,6 @@ import org.scalatest.FunSpec
 
 class CompileSpec extends FunSpec with Fixtures {
   describe ("compile") {
-
     val compile = Compile()
 
     it ("should compile basic less files") {
@@ -57,10 +56,10 @@ class CompileSpec extends FunSpec with Fixtures {
           fail("expected success but was %s" format f)
       }
     }
-    
+
     it ("should compile with @imports") {
       val path = "less/main.less"
-      val url = getClass.getResource("/" + path)
+      val url = CompileSpec.this.getClass.getResource("/" + path)
       compile(url) match {
         case Right(sheet) =>
           assert(sheet.src === file("/css/main.css"))
