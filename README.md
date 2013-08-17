@@ -14,7 +14,7 @@ libraryDependencies += "me.lessis" %% "lesst" % "0.1.0"
 
 Via [a more civilized method](https://github.com/softprops/ls#readme) which will do the same without all the manual work.
 
-    > ls-install courier
+    > ls-install lesst
         
 _Note_ If you are a [bintray-sbt](https://github.com/softprops/bintray-sbt#readme) user you can optionally specify the resolver as
             
