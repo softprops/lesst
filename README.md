@@ -32,7 +32,7 @@ Compile(Options(mini = true))(fileName, lessSourceCode)
 
 You can also store a reference to Compiler an call method which return a new compile with updated options
 
-```
+```scala
 lesst.Compile().minify(true)(fileName, lessSource)
 ```
 
