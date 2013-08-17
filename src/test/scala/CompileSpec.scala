@@ -59,8 +59,7 @@ class CompileSpec extends FunSpec with Fixtures {
 
     it ("should compile with @imports") {
       val path = "less/main.less"
-      val url = CompileSpec.this.getClass.getResource("/" + path)
-      compile(url) match {
+      compile(url("/" + path)) match {
         case Right(sheet) =>
           assert(sheet.src === file("/css/main.css"))
         case Left(f) =>
