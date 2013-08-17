@@ -13,7 +13,7 @@ object Compile {
     DefaultCompile(filename, code, options)
 }
 
-case class CompilationResult(cssContent: String, imports: List[String])
+case class CompilationResult(css: String, imports: List[String])
 
 class CompilationResultHost extends ScriptableObject {
   implicit class NativeArrayWrapper(arr: NativeArray) {
