@@ -4,25 +4,30 @@ package lesst
 sealed trait CompilationError extends RuntimeException
 
 case class UnexpectedResult(result: Any)
-   extends CompilationError {
+  extends CompilationError {
   override def getMessage =
     "Unexpected javascript return type %s: %s"
        .format(result.getClass, result)
 }
 
 case class UnexpectedError(err: Any)
-   extends CompilationError {
+  extends CompilationError {
   override def getMessage =
     "Unexpected error: %s" format err
 }
 
 object LessError {
-  val Line = "line"
+  
   val Col = "column"
-  val Msg = "message"
-  val Name = "name"
+  val CallExtract = "callExtract"
+  val CallLine = "callLine"
   val Extract = "extract"
   val Filename = "filename"
+  val Index = "index"
+  val Line = "line"
+  val Msg = "message"
+  val Name = "name"
+  val Stack = "stack"
   val Type = "type"
 
   trait Formatter[T <: CompilationError] {
@@ -35,8 +40,8 @@ object LessError {
 
   val Properties = Seq(
     Name, Msg, Type, Filename, Line,
-    Col, "callLine", "callExtract", "stack",
-    Extract, "index", "filename")
+    Col, CallLine, CallExtract, Stack,
+    Extract, Index)
 
   val UndefVar = """variable (@.*) is undefined""".r
 
@@ -54,7 +59,7 @@ object LessError {
       props(Filename).toString,
       props(Extract).asInstanceOf[Seq[String]],
       SyntaxError.Formatter(colors)
-    ) else if(props.isDefinedAt(Msg)) {
+    ) else if (props.isDefinedAt(Msg)) {
       UndefVar.findFirstMatchIn(props(Msg).toString).map {
         case matched =>
           UndefinedVar(
