@@ -61,5 +61,5 @@ println("compiling scala...")
 
 * see the [lesscss docs](http://lesscss.org/) for more information on less
 * this version of lesst uses a the _1.4.1_  version of the less compiler "under the hood"
-
+* historians will look back on one day realized this code was extracted from [less-sbt](https://github.com/softprops/less-sbt) for the greater good. If you are doing greater good with lesst. You should [let me know about](https://twitter.com/softprops/).
 Doug Tangren (softprops) 2013
