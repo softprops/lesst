@@ -1,7 +1,6 @@
 package lesst
 
 import org.scalatest.FunSpec
-//import scala.util.Success
 
 class CompileSpec extends FunSpec with Fixtures {
   describe ("compile") {
