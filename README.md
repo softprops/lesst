@@ -12,8 +12,9 @@ in less-sbt for use as a standalone library
 This library provides a scala interface for compiling beautiful less css source files into slightly less beauitful css files, lest you
 actually like repeating your self over and over in css. In which case, this library may not be for you.
 
-To compile less source code, you apply a `lesst.InputSource[T]` to `lesst.Compile`. There are currently two out of the box InputSources available 
-which are implicitly resolved.
+### InputSources
+
+To compile less source code, you apply a `lesst.InputSource[T]` to the `lesst.Compile` object. There are currently two out-of-the-box `InputSources` available which are implicitly resolved.
 
 You can provide a fileName and less source code.
 
@@ -21,15 +22,15 @@ You can provide a fileName and less source code.
 lesst.Compile()(fileName, lessSourceCode)
 ```
 
-A filename is required to resolve relative paths to less @imports.
+A filename is required to resolve relative paths to less `@imports`, otherwise they won't work.
 
-You can also provide a `java.net.URL` representing the file resource.
+You can also provide a `java.net.URL` representing the .less file resource.
 
 ```scala
 lesst.Compile()(getClass().getResource(fileName))
 ```
 
-An `InputSource` is a type class defined as 
+An `InputSource` is a simple type class defined as 
 
 ```scala
 trait InputSource[T] {
@@ -40,8 +41,12 @@ trait InputSource[T] {
 
 Compile will implicitly resolve an instance of this for type `T` when compiling less sources.
 
+### Compilation results
+
 The compilation results in a `scala.Either[CompilationError, StyleSheet]` which provides access the compiled css
 and a list of file imports included in the StyleSheet or a CompilationError containing information about what happened and where.
+
+### Compile options
 
 You can optionally minify the generated css if you like "skinny" output. The default is to not minify output.
 
@@ -56,13 +61,7 @@ You can also store a reference to Compiler an call method which return a new com
 lesst.Compile().minify(true)(fileName, lessSource)
 ```
 
-Alternatively you can provide a file as a `java.net.URL` along with an optional`java.nio.charset.Charset` to decode its contents.
-
-```scala
-lesst.Compile()(getClass.getResource(fileName))
-```
-
-### future is full of choices
+### Future is full of choices
 
 This library does not make choices for you in regard to your choice of asynchronicity. You can make them yourself.
 
