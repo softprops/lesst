@@ -6,14 +6,18 @@ import org.mozilla.javascript.{
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 
+/** Less CSS compiler interface */
+trait Compile {
+  def apply[T : InputSource](in: T): Compile.Result
+}
+
 object Compile {
   type Result = Either[CompilationError, StyleSheet]
   def apply(options: Options = Options()) = DefaultCompiler
 }
 
-/** Less CSS compiler interface */
 case class Compiler(compiler: String, options: Options = Options())
-  extends ShellEmulation {
+  extends Compile with ShellEmulation {
 
   def minify(m: Boolean) =
     copy(options = options.copy(mini = m))
