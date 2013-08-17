@@ -41,11 +41,6 @@ trait InputSource[T] {
 
 Compile will implicitly resolve an instance of this for type `T` when compiling less sources.
 
-### Compilation results
-
-The compilation results in a `scala.Either[CompilationError, StyleSheet]` which provides access the compiled css
-and a list of file imports included in the StyleSheet or a CompilationError containing information about what happened and where.
-
 ### Compile options
 
 You can optionally minify the generated css if you like "skinny" output. The default is to not minify output.
@@ -60,6 +55,11 @@ You can also store a reference to Compiler an call method which return a new com
 ```scala
 lesst.Compile().minify(true)(fileName, lessSource)
 ```
+
+### Compilation results
+
+The compilation results in a `scala.Either[CompilationError, StyleSheet]` which provides access the compiled css
+and a list of file imports included in the StyleSheet or a CompilationError containing information about what happened and where.
 
 ### Future is full of choices
 
