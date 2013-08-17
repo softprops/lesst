@@ -1,6 +1,6 @@
 # lesst
 
-a chauffeur for scala patrons in the [less css](http://lesscss.org/) compilation party.
+a chauffeur for [scala](http://www.scala-lang.org/) patrons in the [less css](http://lesscss.org/) compilation party.
 
 ## /!\ Extraction in progress
 
