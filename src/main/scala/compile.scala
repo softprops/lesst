@@ -4,6 +4,7 @@ import org.mozilla.javascript.{
   Callable, Context, JavaScriptException,
   NativeArray, Scriptable, ScriptableObject }
 import java.io.InputStreamReader
+import java.net.URL
 import java.nio.charset.Charset
 import scala.collection.JavaConverters._
 
@@ -22,11 +23,14 @@ case class Compiler(compiler: String, options: Options = Options())
   def colors(c: Boolean) =
     copy(options = options.copy(colors = c))
 
-  def apply(name: String, code: String): Compile.Result =
+  def apply(url: URL, charset: Charset = utf8): Compile.Result =
+    apply(url.getFile, io.Source.fromURL(url)(io.Codec(charset)).mkString)
+
+  def apply(filename: String, code: String): Compile.Result =
     withContext { ctx =>
       val less = scope.get("compile", scope).asInstanceOf[Callable]
       try {
-        less.call(ctx, scope, scope, Array(name, code, options.mini.asInstanceOf[AnyRef])) match {
+        less.call(ctx, scope, scope, Array(filename, code, options.mini.asInstanceOf[AnyRef])) match {
           case sheet: ScriptableStyleSheet => Right(sheet.result)
           case ur => Left(UnexpectedResult(ur))
         }
