@@ -12,7 +12,7 @@ in less-sbt for use as a standalone library
 This library provides a scala interface for compiling beautiful less css source files into slightly less beauitful css files, lest you
 actually like repeating your self over and over in css. In which case, this library may not be for you.
 
-### InputSources
+### Input sources
 
 To compile less source code, you apply a `lesst.InputSource[T]` to the `lesst.Compile` object. There are currently two out-of-the-box `InputSources` available which are implicitly resolved.
 
