@@ -5,12 +5,17 @@ decently agreeable, [less-sbt](https://github.com/softprops/less-sbt) sbt plugin
 
 ### Changes/Features
 
-- better error reporting. error reporting is a _feature_
-- Upgraded to the lasted version of less, currently 1.4.2
-- Since it does less that what the sbt plugin needs, it can do what it does do better.
+- Better error reporting. error reporting is a _feature_
+
+![errors](http://f.cl.ly/items/3n0u0c2H2m440D3r3p2U/errors.png)
+
+- Upgraded to the latest version of less css, currently [1.4.2](https://github.com/less/less.js/releases/tag/v1.4.2)
+- Since this library does less than what the less-sbt sbt plugin does, it can do what it does do better.
 
 ### Non-Features
 
-- A lack of a out of the box async interface. This release targets scala versions supporting `scala.concurrent.Future`, which 
+- A lack of a out-of-the-box async interface. This release is published for scala versions supporting `scala.concurrent.Future`, which 
 makes it trivial to make the async choice yourself. Batteries are now included in the language so they are intentially kept out
 of the library.
+
+Lest you need reminded, you can find more information about lesst on the project's [readme](https://github.com/softprops/lesst#readme)
