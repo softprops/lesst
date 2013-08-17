@@ -78,7 +78,7 @@ and a list of file imports included in the StyleSheet or a CompilationError cont
 
 ### Error reporting
 
-Unless you are [Chuck Norris](http://darcxed.wordpress.com/2012/03/19/the-ultimate-top-30-chuck-norris-the-programmer-jokes/), you probably will stumble on a syntax error on occasion when writing less css. Lesst keeps that in mine and provides good error reporting with formatted `CompilationErrors`.
+Unless you are [Chuck Norris](http://darcxed.wordpress.com/2012/03/19/the-ultimate-top-30-chuck-norris-the-programmer-jokes/), you probably will stumble on a syntax error on occasion when writing less css. Lesst keeps that in mind and provides _good_ error reporting with formatted `CompilationErrors`.
 
 ![errors](errors.png)
 
