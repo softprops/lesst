@@ -65,7 +65,7 @@ and a list of file imports included in the StyleSheet or a CompilationError cont
 
 Unless you are [Chunk Noris](http://darcxed.wordpress.com/2012/03/19/the-ultimate-top-30-chuck-norris-the-programmer-jokes/), you probably will stumble on a syntax error on occasion when writing less css. Lesst keeps that in mine and provides good error reporting with formatted `CompilationErrors`.
 
-![errors][errors.png]
+![errors](errors.png)
 
 ### Future is full of choices
 
