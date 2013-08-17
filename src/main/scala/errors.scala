@@ -6,7 +6,8 @@ sealed trait CompilationError extends RuntimeException
 case class UnexpectedResult(result: Any)
    extends CompilationError {
   override def getMessage =
-    "Unexpected javascript return type %s: %s" format(result.getClass, result)
+    "Unexpected javascript return type %s: %s"
+       .format(result.getClass, result)
 }
 
 case class UnexpectedError(err: Any)

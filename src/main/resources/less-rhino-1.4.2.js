@@ -5333,7 +5333,7 @@ function compile(scriptName, code, min) {
     if(e) { throw e; }// todo we could add scriptname here for more context
     css = root.toCSS({ compress: min || false })
   });
-  return new CompilationResult(css, limports);
+  return new StyleSheet(css, limports);
 }
 
 function error(e, filename) {

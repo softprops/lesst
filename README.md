@@ -1,12 +1,11 @@
 # lesst
 
-a chauffeur for scala patrons in the [less css](http://lesscss.org/) compilation party
+a chauffeur for scala patrons in the [less css](http://lesscss.org/) compilation party.
 
 ## /!\ Extraction in progress
 
 This library is the extraction of the less css compiler used
 in less-sbt for use as a standalone library
-
 
 ## usage
 
@@ -21,8 +20,8 @@ lesst.Compile(fileName, lessSourceCode)
 
 A filename is required to resolve relative paths to less @imports.
 
-This returns a ``scala.Either[CompilationError, CompilationResult]` which provides access the compiled css
-and a list of file imports included in the CompilationResult or a CompilationError containing information about what happened.
+This returns a ``scala.Either[CompilationError, StyleSheet]` which provides access the compiled css
+and a list of file imports included in the StyleSheet or a CompilationError containing information about what happened and where.
 
 You can optionally minify the generated css if you like skinny output. The default is to not minify output.
 
@@ -40,10 +39,11 @@ Got other stuff to do? Why wait? Put a `scala.concurrent.Future` on it.
 ```scala
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import lesst.{ Compile, CompilationResult }
+import lesst.{ Compile, StyleSheet }
+
 Future(Compile(file, lessSourceCode)).map {
   _.fold(println, { _ match {
-    case CompilationResult(css, imports) =>
+    case StyleSheet(css, _) =>
       Thread.sleep(1000)
       println(css)
   }})

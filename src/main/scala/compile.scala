@@ -7,27 +7,28 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import scala.collection.JavaConverters._
 
+case class StyleSheet(src: String, imports: List[String])
+
 object Compile {
-  type Result = Either[CompilationError, CompilationResult]
+  type Result = Either[CompilationError, StyleSheet]
   def apply(filename: String, code: String, options: Options = Options()) =
     DefaultCompile(filename, code, options)
 }
 
-case class CompilationResult(css: String, imports: List[String])
-
-class CompilationResultHost extends ScriptableObject {
+class ScriptableStyleSheet extends ScriptableObject {
   implicit class NativeArrayWrapper(arr: NativeArray) {
     def toList[T](f: AnyRef => T): List[T] =
       (arr.getIds map { id: AnyRef =>
         f(arr.get(id.asInstanceOf[java.lang.Integer], null))
       }).toList
   }
-  var compilationResult: CompilationResult = null
+  // yes. it's mutable. it's also javascript.
+  var result: StyleSheet = null
 
-  override def getClassName() = "CompilationResult"
+  override def getClassName() = "StyleSheet"
 
   def jsConstructor(css: String, imports: NativeArray) {
-    compilationResult = CompilationResult(css, imports.toList(_.toString))
+    result = StyleSheet(css, imports.toList(_.toString))
   }
 }
 
@@ -42,7 +43,7 @@ abstract class AbstractCompile(src: String)
       val less = scope.get("compile", scope).asInstanceOf[Callable]
       try {
         less.call(ctx, scope, scope, Array(name, code, options.mini.asInstanceOf[AnyRef])) match {
-          case cr: CompilationResultHost => Right(cr.compilationResult)
+          case sheet: ScriptableStyleSheet => Right(sheet.result)
           case ur => Left(UnexpectedResult(ur))
         }
       } catch {
@@ -84,7 +85,7 @@ abstract class AbstractCompile(src: String)
         utf8),
       src, 1, null
     )
-    ScriptableObject.defineClass(scope, classOf[CompilationResultHost]);
+    ScriptableObject.defineClass(scope, classOf[ScriptableStyleSheet]);
     scope
   }
 

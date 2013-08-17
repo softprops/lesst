@@ -9,9 +9,9 @@ class CompileSpec extends FunSpec with Fixtures {
       val path = "less/basic.less"
       val code = file("/" + path)
       Compile(path, code) match {
-        case Right(CompilationResult(css, imports)) =>
-          assert(css === file("/css/basic.css"))
-          assert(imports === List())          
+        case Right(sheet) =>
+          assert(sheet.src === file("/css/basic.css"))
+          assert(sheet.imports === List())
         case Left(f) => fail("expected success but was %s" format f)
       }
     }
@@ -49,8 +49,8 @@ class CompileSpec extends FunSpec with Fixtures {
       val path = "less/at.less"
       val code = file("/" + path)
       Compile(path, code) match {
-        case Right(result) =>
-          assert(result.css === file("/css/at.css"))
+        case Right(sheet) =>
+          assert(sheet.src === file("/css/at.css"))
         case Left(f) =>
           fail("expected success but was %s" format f)
       }        
