@@ -12,7 +12,10 @@ in less-sbt for use as a standalone library
 This library provides a scala interface for compiling beautiful less css source files into slightly less beauitful css files, lest you
 actually like repeating your self over and over in css. In which case, this library may not be for you.
 
-To compile less source code, apply a filename and a string containing source code to `lesst.Compile`
+To compile less source code, you apply a `lesst.InputSource[T]` to `lesst.Compile`. There are currently two out of the box InputSources available 
+which are implicitly resolved.
+
+You can provide a fileName and less source code.
 
 ```scala
 lesst.Compile()(fileName, lessSourceCode)
@@ -20,10 +23,27 @@ lesst.Compile()(fileName, lessSourceCode)
 
 A filename is required to resolve relative paths to less @imports.
 
-This returns a `scala.Either[CompilationError, StyleSheet]` which provides access the compiled css
+You can also provide a `java.net.URL` representing the file resource.
+
+```scala
+lesst.Compile()(getClass().getResource(fileName))
+```
+
+An `InputSource` is a type class defined as 
+
+```scala
+trait InputSource[T] {
+  def filename: String
+  def src: String
+}
+```
+
+Compile will implicitly resolve an instance of this for type `T` when compiling less sources.
+
+The compilation results in a `scala.Either[CompilationError, StyleSheet]` which provides access the compiled css
 and a list of file imports included in the StyleSheet or a CompilationError containing information about what happened and where.
 
-You can optionally minify the generated css if you like skinny output. The default is to not minify output.
+You can optionally minify the generated css if you like "skinny" output. The default is to not minify output.
 
 ```scala
 import lesst.{ Compile, Options }
@@ -38,7 +58,7 @@ lesst.Compile().minify(true)(fileName, lessSource)
 
 Alternatively you can provide a file as a `java.net.URL` along with an optional`java.nio.charset.Charset` to decode its contents.
 
-```
+```scala
 lesst.Compile()(getClass.getResource(fileName))
 ```
 
