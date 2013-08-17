@@ -1,0 +1,21 @@
+{
+  "organization" : "me.lessis",
+  "name" : "lesst",
+  "version" : "0.1.0",
+  "description" : "a chauffeur for scala patrons in the less css compilation party",
+  "site" : "",
+  "tags" : [ "less", "css", "lesscss", "lesst" ],
+  "docs" : "",
+  "resolvers" : [ "http://dl.bintray.com/content/softprops/maven" ],
+  "dependencies" : [ {
+    "organization" : "org.mozilla",
+    "name" : "rhino",
+    "version" : "1.7R4"
+  } ],
+  "scalas" : [ "2.9.2", "2.9.3", "2.10.2" ],
+  "licenses" : [ {
+    "name" : "MIT",
+    "url" : "https://github.com/softprops/lesst/blob/0.1.0/LICENSE"
+  } ],
+  "sbt" : false
+}
