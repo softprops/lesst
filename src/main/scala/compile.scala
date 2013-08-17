@@ -9,19 +9,14 @@ import scala.collection.JavaConverters._
 
 object Compile {
   type Result = Either[CompilationError, CompilationResult]
-  def apply(name: String, code: String, options: Options = Options()) =
-    DefaultCompile(name, code, options)
-  /** compiles less using a beta version of the compiler, this interface
-   *  may be removed in the future */
-  def beta(name: String, code: String, options: Options = Options()) =
-    BetaCompile(name, code, options)
+  def apply(filename: String, code: String, options: Options = Options()) =
+    DefaultCompile(filename, code, options)
 }
 
 case class CompilationResult(cssContent: String, imports: List[String])
 
 class CompilationResultHost extends ScriptableObject {
-  implicit def implna(arr: NativeArray) = new NativeArrayWrapper(arr)
-  class NativeArrayWrapper(arr: NativeArray) {
+  implicit class NativeArrayWrapper(arr: NativeArray) {
     def toList[T](f: AnyRef => T): List[T] =
       (arr.getIds map { id: AnyRef =>
         f(arr.get(id.asInstanceOf[java.lang.Integer], null))
@@ -54,6 +49,7 @@ abstract class AbstractCompile(src: String)
           case e: JavaScriptException =>
             e.getValue match {
               case v: Scriptable =>
+                // fixme: kind of a janky solution. room for impovement here
                 val errorInfo = (Map.empty[String, Any] /: LessError.Properties)(
                   (a,e) =>
                     if (v.has(e, v)) v.get(e, v) match {
@@ -104,6 +100,4 @@ abstract class AbstractCompile(src: String)
   }
 }
 
-object DefaultCompile extends AbstractCompile("less-rhino-1.3.3.js")
-
-object BetaCompile extends AbstractCompile("less-rhino-1.4.0.js")
+object DefaultCompile extends AbstractCompile("less-rhino-1.4.2.js")
