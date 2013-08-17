@@ -1,19 +1,16 @@
 ## extraction for great good
 
-This is the first release of a standalone less css compiler extracted from the wildly popular, well 
-decently agreeable, less-sbt sbt plugin.
+This is the first release of a standalone version of [less css](http://lesscss.org/) compiler extracted from the wildly popular, or at least
+decently agreeable, [less-sbt](https://github.com/softprops/less-sbt) sbt plugin.
 
 ### Changes/Features
 
 - better error reporting. error reporting is a _feature_
-- (Beta) support for the upcoming less css 1.4.0 compiler. This is likely to be dropped in the next release.
+- Upgraded to the lasted version of less, currently 1.4.2
+- Since it does less that what the sbt plugin needs, it can do what it does do better.
 
 ### Non-Features
 
 - A lack of a out of the box async interface. This release targets scala versions supporting `scala.concurrent.Future`, which 
 makes it trivial to make the async choice yourself. Batteries are now included in the language so they are intentially kept out
 of the library.
-
-### Planned/Features
-
-- expose result of compilation as a `scala.util.Try[CompilationResult]` instead of either Either. This release targets sbt 0.12.* which is compiled for scala 2.9.2.
