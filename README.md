@@ -61,6 +61,12 @@ lesst.Compile().minify(true)(fileName, lessSource)
 The compilation results in a `scala.Either[CompilationError, StyleSheet]` which provides access the compiled css
 and a list of file imports included in the StyleSheet or a CompilationError containing information about what happened and where.
 
+### Error reporting
+
+Unless you are [Chunk Noris](http://darcxed.wordpress.com/2012/03/19/the-ultimate-top-30-chuck-norris-the-programmer-jokes/), you probably will stumble on a syntax error on occasion when writing less css. Lesst keeps that in mine and provides good error reporting with formatted `CompilationErrors`.
+
+![errors][errors.png]
+
 ### Future is full of choices
 
 This library does not make choices for you in regard to your choice of asynchronicity. You can make them yourself.
