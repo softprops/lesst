@@ -48,11 +48,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import lesst.{ Compile, StyleSheet }
 
 Future(Compile()(file, lessSourceCode)).map {
-  _.fold(println, { _ match {
+  _.fold(println, {
     case StyleSheet(css, _) =>
       Thread.sleep(1000)
       println(css)
-  }})
+  })
 }
 println("compiling scala...")
 ```
