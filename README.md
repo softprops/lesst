@@ -1,5 +1,7 @@
 # lesst
 
+[![Build Status](https://travis-ci.org/softprops/lesst.png?branch=master)](https://travis-ci.org/softprops/lesst)
+
 a chauffeur for [scala](http://www.scala-lang.org/) patrons in the [less css](http://lesscss.org/) compilation party.
 
 ## install
