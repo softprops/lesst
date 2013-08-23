@@ -66,5 +66,16 @@ class CompileSpec extends FunSpec with Fixtures {
           fail("expected success but was %s" format f)
       }
     }
+
+
+    it ("should compile with nested @imports") {
+      val path = "less/nestedimports.less"
+      compile(url("/" + path)) match {
+        case Right(sheet) =>
+          assert(sheet.src === file("/css/nestedimports.css"))
+        case Left(f) =>
+          fail("expected success but was %s" format f)
+      }
+    }
   }
 }
