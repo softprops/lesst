@@ -5271,6 +5271,12 @@ tree.jsify = function (obj) {
 })(require('./tree'));
 var name;
 
+var console = {
+  log: function(msg) {
+    java.lang.System.out.println(msg);
+  }
+};
+
 // reference to the name argument in compile function
 var rootPath, curPath, limports;
 
@@ -5281,14 +5287,13 @@ function loadStyleSheet(sheet, callback, reload, remaining) {
 //        sheetName = name.slice(0, endOfPath + 1) + sheet.href,
 //        contents = sheet.contents || {},
 //        input = readFile(sheetName);
-    var sheetName = curPath + '/' + sheet.href,
-        contents = sheet.contents || {},
-        input = readFile(sheetName);
 
-    input = input.replace(/^\xEF\xBB\xBF/, '');
-        
+    var sheetName = curPath + '/' + sheet.href,
+         contents = sheet.contents || {},
+            input = readFile(sheetName),
+            input = input.replace(/^\xEF\xBB\xBF/, '');
     contents[sheetName] = input;
-        
+
     var parser = new less.Parser({
         // the paths option below was added in 1.3.0 dis of less-css
         // it breaks our usage but not sure why so we are documenting in here for now. look into this
@@ -5299,19 +5304,26 @@ function loadStyleSheet(sheet, callback, reload, remaining) {
     // added by us
     var prevPath = curPath;
     curPath = sheetName.slice(0, sheetName.lastIndexOf('/'));
-    limports.push(sheetName.slice(rootPath.length + 1));
-
+    var importPath = sheetName.slice(rootPath.length + 1);
+    // FIXME: this is a hack for now but it looks like
+    //        less's compiler gets confused and processes
+    //        some imports more than once in cases
+    //        of nested imports. Removing redundancy in tracking
+    //        here. Please do investigate.
+    if (limports.indexOf(importPath) === -1) {
+        limports.push(importPath);
+    }
     parser.parse(input, function (e, root) {
         if (e) {
             return error(e, sheetName);
         }
         try {
             callback(e, root, input, sheet, { local: false, lastModified: 0, remaining: remaining }, sheetName);
+            curPath = prevPath;
         } catch(e) {
             error(e, sheetName);
         }
     });
-    curPath = prevPath;
 }
 
 function writeFile(filename, content) {
