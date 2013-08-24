@@ -67,7 +67,6 @@ class CompileSpec extends FunSpec with Fixtures {
       }
     }
 
-
     it ("should compile with nested @imports") {
       val path = "less/nestedimports.less"
       compile(url("/" + path)) match {
