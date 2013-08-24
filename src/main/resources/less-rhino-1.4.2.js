@@ -5281,7 +5281,7 @@ function loadStyleSheet(sheet, callback, reload, remaining) {
 //        sheetName = name.slice(0, endOfPath + 1) + sheet.href,
 //        contents = sheet.contents || {},
 //        input = readFile(sheetName);
-    var sheetName = curPath + '/' + sheet.href;
+    var sheetName = curPath + '/' + sheet.href,
         contents = sheet.contents || {},
         input = readFile(sheetName);
 
@@ -5292,12 +5292,12 @@ function loadStyleSheet(sheet, callback, reload, remaining) {
     var parser = new less.Parser({
         // the paths option below was added in 1.3.0 dis of less-css
         // it breaks our usage but not sure why so we are documenting in here for now. look into this
-        //paths: [sheet.href.replace(/[\w\.-]+$/, '')],
+        paths: [sheet.href.replace(/[\w\.-]+$/, '')],
         contents: contents
     });
 
     // added by us
-    var prefPath = curPath;
+    var prevPath = curPath;
     curPath = sheetName.slice(0, sheetName.lastIndexOf('/'));
     limports.push(sheetName.slice(rootPath.length + 1));
 
@@ -5311,6 +5311,7 @@ function loadStyleSheet(sheet, callback, reload, remaining) {
             error(e, sheetName);
         }
     });
+    curPath = prevPath;
 }
 
 function writeFile(filename, content) {
@@ -5319,7 +5320,6 @@ function writeFile(filename, content) {
     out.write(content);
     out.close();
 }
-
 
 // removed original cmdline argument handling function
 // with this function for convenient scoped access to the
