@@ -76,5 +76,16 @@ class CompileSpec extends FunSpec with Fixtures {
           fail("expected success but was %s" format f)
       }
     }
+
+    it ("should extract the correct dependencies") {
+      val path = "less/deps/main.less"
+      compile(url("/" + path)) match {
+        case Right(sheet) =>
+          assert(sheet.imports === List("imports/lib.less", "imports/sub.less", "sub.less"))
+        case Left(f) =>
+          fail("expected success but was %s" format f)
+      }
+    }
+
   }
 }
