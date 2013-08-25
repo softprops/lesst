@@ -1,3 +1,3 @@
 ## Fixes
 
-Fixed Issue with nested `@import "..."`s
+Fixed [issue](https://github.com/softprops/less-sbt/issues/32) with nested `@import "..."`s
