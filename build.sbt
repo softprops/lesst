@@ -2,9 +2,9 @@ organization := "me.lessis"
 
 name := "lesst"
 
-version := "0.1.1-SNAPSHOT"
+version := "0.1.1"
 
-crossScalaVersions := Seq("2.9.2", "2.9.3", "2.10.2")
+crossScalaVersions := Seq("2.9.3", "2.10.2")
 
 description := "a chauffeur for scala patrons in the less css compilation party"
 
