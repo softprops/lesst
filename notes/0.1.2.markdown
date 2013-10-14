@@ -1,0 +1,3 @@
+## bug fixes
+
+* passing an lesst.Options object to less.Compile did not actually propegate options to the default compiler
