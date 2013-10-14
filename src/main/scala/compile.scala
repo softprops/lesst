@@ -13,7 +13,8 @@ trait Compile {
 
 object Compile {
   type Result = Either[CompilationError, StyleSheet]
-  def apply(options: Options = Options()) = DefaultCompiler
+  def apply(options: Options = Options()) =
+    DefaultCompiler.minify(options.mini).colors(options.colors)
 }
 
 case class Compiler(compiler: String, options: Options = Options())
