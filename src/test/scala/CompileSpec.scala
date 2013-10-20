@@ -87,7 +87,7 @@ class CompileSpec extends FunSpec with Fixtures {
       }
     }
 
-    it ("should minify output") {
+    it ("should minify output with fluent interface") {
       val path = "less/basic.less"
       val code = file("/" + path)
       compile.minify(true)(path, code) match {
@@ -98,5 +98,16 @@ class CompileSpec extends FunSpec with Fixtures {
       }
     }
 
+    it ("should minify output with default compiler providing custom options") {
+      val path = "less/basic.less"
+      val code = file("/" + path)
+      // should use the default compiler AND apply the provided options
+      Compile(Options(mini = true))(path, code) match {
+        case Right(sheet) =>
+          assert(sheet.src === file("/css/minibasic.css"))
+          assert(sheet.imports === List())
+        case Left(f) => fail("expected success but was %s" format f)
+      }
+    }
   }
 }
