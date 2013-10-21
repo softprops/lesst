@@ -2,7 +2,7 @@ organization := "me.lessis"
 
 name := "lesst"
 
-version := "0.1.2-SNAPSHOT"
+version := "0.1.2"
 
 crossScalaVersions := Seq("2.9.3", "2.10.3")
 
