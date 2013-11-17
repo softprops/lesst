@@ -73,7 +73,7 @@ case class Compiler(compiler: String, options: Options = Options())
         utf8),
       compiler, 1, null
     )
-    ScriptableObject.defineClass(scope, classOf[ScriptableStyleSheet]);
+    ScriptableObject.defineClass(scope, classOf[ScriptableStyleSheet])
     scope
   }
 
@@ -92,4 +92,4 @@ case class Compiler(compiler: String, options: Options = Options())
     Array(in.filename, in.src, options.mini.asInstanceOf[AnyRef])
 }
 
-object DefaultCompiler extends Compiler("less-rhino-1.4.2.js")
+object DefaultCompiler extends Compiler("less-rhino-1.5.0.js")
